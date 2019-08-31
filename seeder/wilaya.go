@@ -2,76 +2,64 @@ package seeder
 
 import (
 	"context"
+	parser "dza-go/fileparse"
 	"encoding/json"
 	"fmt"
-	parser "geo_google/fileparse"
 	"googlemaps.github.io/maps"
 	"io/ioutil"
 	"log"
 )
 
-var long float64
-var latitude float64
-
-func queryGoogle(search string, client *maps.Client) *[]maps.GeocodingResult {
+func queryGoogle(channel chan []float64, search string, client *maps.Client) {
 	response, err := client.Geocode(context.Background(), &maps.GeocodingRequest{Address: search})
 	if err != nil {
 		log.Fatalf("error querying google maps %s", err)
 	}
-	return &response
+	long := 0.0
+	latitude := 0.0
+	if len(response) > 0 {
+		long = response[0].Geometry.Location.Lng
+		latitude = response[0].Geometry.Location.Lat
+	}
+
+	channel <- []float64{long, latitude}
+}
+
+func queryGoogleAPI(searchFor string, client *maps.Client) chan []float64 {
+	channel := make(chan []float64)
+	go queryGoogle(channel, searchFor, client)
+	return channel
 }
 
 func seedBaladiyaLocation(baladiyas []parser.Baladiya, client *maps.Client) {
 	for index, baladiya := range baladiyas {
-		response := *queryGoogle(fmt.Sprintf("%s, DZ", baladiya.French), client)
-
-		if len(response) > 1 {
-			fmt.Sprintln("multiple results found for %s", response[0].FormattedAddress)
-		} else if len(response) == 1 {
-			long = response[0].Geometry.Location.Lng
-			latitude = response[0].Geometry.Location.Lat
-			baladiyas[index].Lng = long
-			baladiyas[index].Lat = latitude
-		}
+		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", baladiya.French), client)
+		baladiyas[index].Lng = results[0]
+		baladiyas[index].Lat = results[1]
+		fmt.Println("baladiya long lat :> ", results)
 	}
 }
 
 func seedDairaLocation(dairas []parser.Daira, client *maps.Client) {
 	for index, daira := range dairas {
-		response := *queryGoogle(fmt.Sprintf("%s, DZ", daira.French), client)
-
-		if len(response) > 1 {
-			fmt.Sprintln("multiple results found for %s", response[0].FormattedAddress)
-		} else if len(response) == 1 {
-			long = response[0].Geometry.Location.Lng
-			latitude = response[0].Geometry.Location.Lat
-
-			dairas[index].Lng = long
-			dairas[index].Lat = latitude
-
-			if len(daira.Baladiyas) > 0 {
-				seedBaladiyaLocation(dairas[index].Baladiyas, client)
-			}
+		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", daira.French), client)
+		dairas[index].Lng = results[0]
+		dairas[index].Lat = results[1]
+		fmt.Println("daira, long lat :> ", results)
+		if len(daira.Baladiyas) > 0 {
+			seedBaladiyaLocation(dairas[index].Baladiyas, client)
 		}
 	}
 }
 
 func seedWilayaLocation(wilayas []parser.Wilaya, client *maps.Client) {
 	for index, wilaya := range wilayas {
-		response := *queryGoogle(fmt.Sprintf("%s, DZ", wilaya.French), client)
-
-		if len(response) > 1 {
-			fmt.Sprintln("multiple results found for %s", response[0].FormattedAddress)
-		} else if len(response) == 1 {
-			fmt.Println("updating long/lat", long, latitude)
-			long = response[0].Geometry.Location.Lng
-			latitude = response[0].Geometry.Location.Lat
-			wilayas[index].Lng = long
-			wilayas[index].Lat = latitude
-
-			if len(wilaya.Dairas) > 0 {
-				seedDairaLocation(wilayas[index].Dairas, client)
-			}
+		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", wilaya.French), client)
+		fmt.Println("long lat :> ", results)
+		wilayas[index].Lng = results[0]
+		wilayas[index].Lat = results[1]
+		if len(wilaya.Dairas) > 0 {
+			seedDairaLocation(wilayas[index].Dairas, client)
 		}
 	}
 }

@@ -1,12 +1,11 @@
 package main
 
 import (
+	seeder "dza-go/seeder"
 	"fmt"
-	seeder "geo_google/seeder"
 )
 
 func main() {
-	creds := seeder.GetAPIKey()
-	seeder.AddLongLat(creds.GeoLocationKey)
+	seeder.AddLongLat(seeder.GetAPIKey())
 	fmt.Println("done")
 }

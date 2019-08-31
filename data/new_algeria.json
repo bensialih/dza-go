@@ -898,8 +898,8 @@
 					{
 						"arabic": "قصر الصباحى",
 						"french": "Ksar Sbahi",
-						"latitude": 0,
-						"longitude": 0
+						"latitude": 36.0841308,
+						"longitude": 7.2571943
 					}
 				],
 				"latitude": 0,
@@ -3404,8 +3404,8 @@
 			"35"
 		],
 		"Dairas": [],
-		"latitude": 35.316633,
-		"longitude": 4.2333355
+		"latitude": 35.677109,
+		"longitude": 4.5418141
 	},
 	{
 		"arabic": "معسكر",
@@ -3645,8 +3645,8 @@
 			"49"
 		],
 		"Dairas": [],
-		"latitude": 0,
-		"longitude": 0
+		"latitude": 33.65813869999999,
+		"longitude": 1.0203224
 	},
 	{
 		"arabic": "اليزي",
@@ -3678,8 +3678,8 @@
 						"longitude": 4.7564046
 					}
 				],
-				"latitude": 36.0735002,
-				"longitude": 4.754739499999999
+				"latitude": 36.0704188,
+				"longitude": 4.7564046
 			},
 			{
 				"french": "ٌRas El Oued",
@@ -4204,8 +4204,8 @@
 					{
 						"arabic": "زلفانة",
 						"french": "Zelfana",
-						"latitude": 0,
-						"longitude": 0
+						"latitude": 32.4101618,
+						"longitude": 4.2230836
 					}
 				],
 				"latitude": 0,
@@ -4218,8 +4218,8 @@
 					{
 						"arabic": "القرارة",
 						"french": "El Guerrara",
-						"latitude": 0,
-						"longitude": 0
+						"latitude": 32.7900544,
+						"longitude": 4.492221499999999
 					}
 				],
 				"latitude": 0,
