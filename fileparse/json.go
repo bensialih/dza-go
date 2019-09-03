@@ -36,17 +36,18 @@ type Wilaya struct {
 }
 
 // ParseWilayaFile to parse json?
-func ParseWilayaFile() (*[]Wilaya, error) {
+func ParseWilayaFile(fileLocation string) (*[]Wilaya, error) {
 	var wilayas []Wilaya
-
 	fmt.Println("parsing file")
+	if fileLocation == "" {
+		fileLocation = "./data/Algeria.json"
+	}
 
-	data, err := ioutil.ReadFile("./data/Algeria.json")
+	data, err := ioutil.ReadFile(fileLocation)
 	if err != nil {
 		log.Fatalf("Failed to get file %s", err)
 	}
 
 	json.Unmarshal(data, &wilayas)
 	return &wilayas, nil
-
 }

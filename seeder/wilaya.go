@@ -10,41 +10,40 @@ import (
 	"log"
 )
 
-func queryGoogle(channel chan []float64, search string, client *maps.Client) {
+func queryGoogle(channel *chan []float64, search string, client *maps.Client) {
 	response, err := client.Geocode(context.Background(), &maps.GeocodingRequest{Address: search})
 	if err != nil {
 		log.Fatalf("error querying google maps %s", err)
 	}
 	long := 0.0
 	latitude := 0.0
+
 	if len(response) > 0 {
 		long = response[0].Geometry.Location.Lng
 		latitude = response[0].Geometry.Location.Lat
 	}
 
-	channel <- []float64{long, latitude}
-}
-
-func queryGoogleAPI(searchFor string, client *maps.Client) chan []float64 {
-	channel := make(chan []float64)
-	go queryGoogle(channel, searchFor, client)
-	return channel
+	*channel <- []float64{long, latitude}
 }
 
 func seedBaladiyaLocation(baladiyas []parser.Baladiya, client *maps.Client) {
 	for index, baladiya := range baladiyas {
-		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", baladiya.French), client)
-		baladiyas[index].Lng = results[0]
-		baladiyas[index].Lat = results[1]
+		channel := make(chan []float64)
+		go queryGoogle(&channel, fmt.Sprintf("%s, DZ", baladiya.French), client)
+		results := <-channel
+		baladiyas[index].Lng = NonZero(baladiyas[index].Lng, results[0])
+		baladiyas[index].Lat = NonZero(baladiyas[index].Lat, results[1])
 		fmt.Println("baladiya long lat :> ", results)
 	}
 }
 
 func seedDairaLocation(dairas []parser.Daira, client *maps.Client) {
 	for index, daira := range dairas {
-		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", daira.French), client)
-		dairas[index].Lng = results[0]
-		dairas[index].Lat = results[1]
+		channel := make(chan []float64)
+		go queryGoogle(&channel, fmt.Sprintf("%s, DZ", daira.French), client)
+		results := <-channel
+		dairas[index].Lng = NonZero(dairas[index].Lng, results[0])
+		dairas[index].Lat = NonZero(dairas[index].Lat, results[1])
 		fmt.Println("daira, long lat :> ", results)
 		if len(daira.Baladiyas) > 0 {
 			seedBaladiyaLocation(dairas[index].Baladiyas, client)
@@ -52,16 +51,26 @@ func seedDairaLocation(dairas []parser.Daira, client *maps.Client) {
 	}
 }
 
+// NonZero checks for non zero values and then returns the default
+func NonZero(original float64, number float64) float64 {
+	if number != 0 {
+		return number
+	}
+	return original
+}
+
 func seedWilayaLocation(wilayas []parser.Wilaya, client *maps.Client) {
 	for index, wilaya := range wilayas {
-		results := <-queryGoogleAPI(fmt.Sprintf("%s, DZ", wilaya.French), client)
-		fmt.Println("long lat :> ", results)
-		wilayas[index].Lng = results[0]
-		wilayas[index].Lat = results[1]
+		channel := make(chan []float64)
+		go queryGoogle(&channel, fmt.Sprintf("%s, DZ", wilaya.French), client)
+		results := <-channel
+		wilayas[index].Lng = NonZero(wilayas[index].Lng, results[0])
+		wilayas[index].Lat = NonZero(wilayas[index].Lat, results[1])
 		if len(wilaya.Dairas) > 0 {
 			seedDairaLocation(wilayas[index].Dairas, client)
 		}
 	}
+
 }
 
 // AddLongLat adding longitude and latitude function
@@ -70,8 +79,8 @@ func AddLongLat(apiKey string) {
 	if err != nil {
 		log.Fatalf("fatal error: %s", err)
 	}
-
-	wilayas, err := parser.ParseWilayaFile()
+	fileLocation := "./data/new_algeria.json"
+	wilayas, err := parser.ParseWilayaFile(fileLocation)
 	if err != nil {
 		log.Fatalf("failed to parse json %s", err)
 	}
@@ -80,7 +89,7 @@ func AddLongLat(apiKey string) {
 
 	dataset, err := json.MarshalIndent(*wilayas, "", "\t")
 	if err != nil {
-		fmt.Sprintf("Failed to marshal wilaya object", err)
+		fmt.Printf("Failed to marshal wilaya object %s", err)
 	}
 
 	error := ioutil.WriteFile("./data/new_algeria.json", dataset, 0777)

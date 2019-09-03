@@ -686,8 +686,8 @@
 					{
 						"arabic": "بريدة",
 						"french": "Brida",
-						"latitude": 33.9500722,
-						"longitude": 1.7502311
+						"latitude": 33.9049713,
+						"longitude": 1.7842236
 					},
 					{
 						"arabic": "تاويالة",
@@ -858,8 +858,8 @@
 					{
 						"arabic": "أم البواقي",
 						"french": "Oum El Bouaghi",
-						"latitude": 35.7881449,
-						"longitude": 7.179025999999999
+						"latitude": 35.873056,
+						"longitude": 7.1197867
 					},
 					{
 						"arabic": "عين الزيتون",
@@ -1118,12 +1118,12 @@
 						"longitude": 7.507127099999999
 					}
 				],
-				"latitude": 35.4582557,
-				"longitude": 7.549096999999999
+				"latitude": 35.94451859999999,
+				"longitude": 4.3770704
 			}
 		],
-		"latitude": 35.7881449,
-		"longitude": 7.179025999999999
+		"latitude": 35.873056,
+		"longitude": 7.1197867
 	},
 	{
 		"arabic": "باتنة",
@@ -2789,8 +2789,8 @@
 						"longitude": 3.2448731
 					}
 				],
-				"latitude": 36.70601449999999,
-				"longitude": 3.2281983
+				"latitude": 33.5731104,
+				"longitude": -7.589843399999999
 			},
 			{
 				"french": "Chéraga",
@@ -3404,8 +3404,8 @@
 			"35"
 		],
 		"Dairas": [],
-		"latitude": 35.677109,
-		"longitude": 4.5418141
+		"latitude": 35.316633,
+		"longitude": 4.2333355
 	},
 	{
 		"arabic": "معسكر",
