@@ -19,14 +19,6 @@ type Location struct {
 	Lng float64 `json:"longitude"`
 }
 
-// NonZero checks for non zero values and then returns the default
-func NonZero(original float64, number float64) float64 {
-	if number != 0 {
-		return number
-	}
-	return original
-}
-
 // UpdateLocation for locations
 func (loc *Location) UpdateLocation(long float64, lat float64) {
 	if loc.Lng == 0 {
