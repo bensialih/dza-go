@@ -1,7 +1,7 @@
 package fileparse
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -51,9 +51,8 @@ type Wilaya struct {
 	Location
 }
 
-// ParseWilayaFile to parse json?
-func ParseWilayaFile(fileLocation string) (*[]Wilaya, error) {
-	var wilayas []Wilaya
+//GetFileContent of file
+func GetFileContent(fileLocation string) []byte {
 	fmt.Println("parsing file")
 	if fileLocation == "" {
 		fileLocation = "./data/Algeria.json"
@@ -63,7 +62,5 @@ func ParseWilayaFile(fileLocation string) (*[]Wilaya, error) {
 	if err != nil {
 		log.Fatalf("Failed to get file %s", err)
 	}
-
-	json.Unmarshal(data, &wilayas)
-	return &wilayas, nil
+	return data
 }

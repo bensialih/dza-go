@@ -67,18 +67,23 @@ func seedWilayaLocation(wilayas []parser.Wilaya, client *maps.Client) {
 // AddLongLat adding longitude and latitude function
 func AddLongLat(apiKey string) {
 	client, err := maps.NewClient(maps.WithAPIKey(apiKey))
+	var wilayas []parser.Wilaya
 	if err != nil {
 		log.Fatalf("fatal error: %s", err)
 	}
+
 	fileLocation := "./data/new_algeria.json"
-	wilayas, err := parser.ParseWilayaFile(fileLocation)
+
+	data := parser.GetFileContent(fileLocation)
+	err = json.Unmarshal(data, &wilayas)
+
 	if err != nil {
 		log.Fatalf("failed to parse json %s", err)
 	}
 
-	seedWilayaLocation(*wilayas, client)
+	seedWilayaLocation(wilayas, client)
 
-	dataset, err := json.MarshalIndent(*wilayas, "", "\t")
+	dataset, err := json.MarshalIndent(wilayas, "", "\t")
 	if err != nil {
 		fmt.Printf("Failed to marshal wilaya object %s", err)
 	}
