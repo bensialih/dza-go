@@ -7,11 +7,16 @@ import (
 	"log"
 )
 
-// Location
+// Name of the place
+type Name struct {
+	Arabic string `json:"arabic"`
+	French string `json:"french"`
+}
+
+// Location of place
 type Location struct {
 	Lat float64 `json:"latitude"`
 	Lng float64 `json:"longitude"`
-	// updateLocation(long float64, lat float64)
 }
 
 // NonZero checks for non zero values and then returns the default
@@ -22,7 +27,7 @@ func NonZero(original float64, number float64) float64 {
 	return original
 }
 
-// UpdateLocation
+// UpdateLocation for locations
 func (loc *Location) UpdateLocation(long float64, lat float64) {
 	if loc.Lng == 0 {
 		loc.Lng = long
@@ -34,32 +39,23 @@ func (loc *Location) UpdateLocation(long float64, lat float64) {
 
 // Baladiya belonging to Dairas
 type Baladiya struct {
-	Arabic string `json:"arabic"`
-	French string `json:"french"`
-	// Lat    float64 `json:"latitude"`
-	// Lng    float64 `json:"longitude"`
 	Location
+	Name
 }
 
 // Daira belongs to Wilaya
 type Daira struct {
-	Arabic    string     `json:"french"`
-	French    string     `json:"arabic"`
+	Name
 	Baladiyas []Baladiya `json:"Baladiyas"`
-	// Lat       float64    `json:"latitude"`
-	// Lng       float64    `json:"longitude"`
 	Location
 }
 
 // Wilaya root parent
 type Wilaya struct {
-	Arabic     string   `json:"arabic"`
-	French     string   `json:"french"`
+	Name
 	Matricule  string   `json:"matricule"`
 	PhoneCodes []string `json:"phoneCodes"`
 	Dairas     []Daira  `json:"Dairas"`
-	// Lat        float64  `json:"latitude"`
-	// Lng        float64  `json:"longitude"`
 	Location
 }
 

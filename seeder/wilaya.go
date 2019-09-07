@@ -31,9 +31,8 @@ func seedBaladiyaLocation(baladiyas []parser.Baladiya, client *maps.Client) {
 		channel := make(chan []float64)
 		go queryGoogle(&channel, fmt.Sprintf("%s, DZ", baladiya.French), client)
 		results := <-channel
+
 		baladiyas[index].UpdateLocation(results[0], results[1])
-		// baladiyas[index].Lng = NonZero(baladiyas[index].Lng, results[0])
-		// baladiyas[index].Lat = NonZero(baladiyas[index].Lat, results[1])
 		fmt.Println("baladiya long lat :> ", results)
 	}
 }
@@ -45,8 +44,6 @@ func seedDairaLocation(dairas []parser.Daira, client *maps.Client) {
 		results := <-channel
 
 		dairas[index].UpdateLocation(results[0], results[1])
-		// dairas[index].Lng = NonZero(dairas[index].Lng, results[0])
-		// dairas[index].Lat = NonZero(dairas[index].Lat, results[1])
 		fmt.Println("daira, long lat :> ", results)
 		if len(daira.Baladiyas) > 0 {
 			seedBaladiyaLocation(dairas[index].Baladiyas, client)
@@ -60,9 +57,6 @@ func seedWilayaLocation(wilayas []parser.Wilaya, client *maps.Client) {
 		go queryGoogle(&channel, fmt.Sprintf("%s, DZ", wilaya.French), client)
 		results := <-channel
 		wilayas[index].UpdateLocation(results[0], results[1])
-
-		// wilayas[index].Lng = NonZero(wilayas[index].Lng, results[0])
-		// wilayas[index].Lat = NonZero(wilayas[index].Lat, results[1])
 		if len(wilaya.Dairas) > 0 {
 			seedDairaLocation(wilayas[index].Dairas, client)
 		}
